@@ -15,13 +15,6 @@
       pot: "2 carrying",
       rows: [["Team Logan", "3", "16", "3", "6"], ["Fairway Finders", "2", "16", "2", "4"], ["Birdie Boys", "1", "16", "1", "2"], ["Mulligan Mafia", "—", "16", "—", "—"], ["Foreplay", "—", "16", "—", "—"]]
     },
-    wolf: {
-      name: "Wolf",
-      line: "Choose a partner—or go alone.",
-      description: "Every tee becomes a decision. No Shanks keeps teams, points and the rotating Wolf organized.",
-      pot: "Hole 14 live",
-      rows: [["R. Hughes", "+3", "13", "18", "18"], ["J. Patel", "+2", "13", "16", "16"], ["T. Caldwell", "+1", "13", "14", "14"], ["M. Brennan", "E", "13", "12", "12"], ["D. O’Leary", "-1", "13", "9", "9"]]
-    },
     match: {
       name: "Match Play",
       line: "Hole by hole. Win, lose or halve.",
