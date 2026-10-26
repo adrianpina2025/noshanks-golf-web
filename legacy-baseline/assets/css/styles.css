@@ -784,6 +784,7 @@ html[data-theme="dark"] .brand--new .brand__dark { display: block; }
 .editorial-split__media { position: relative; }
 .why-list { margin-top: 25px; }
 .persona-card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.persona-card-grid > :last-child:nth-child(odd) { grid-column: span 2; }
 .persona-card { display: grid; grid-template-columns: minmax(180px,.72fr) minmax(0,1.28fr); min-height: 360px; background: var(--paper); overflow: hidden; }
 .persona-card__image { min-height: 100%; overflow: hidden; }
 .persona-card__image picture, .persona-card__image img { width: 100%; height: 100%; }
@@ -1084,6 +1085,7 @@ html[data-theme="dark"] .brand--new .brand__dark { display: block; }
 
 @media (max-width: 1000px) {
   .persona-card-grid { grid-template-columns: 1fr; }
+  .persona-card-grid > :last-child:nth-child(odd) { grid-column: auto; }
   .five-stage-grid { grid-template-columns: repeat(2,1fr); }
   .organizer-command, .planning-poll, .player-app-story, .memory-grid, .club-sync-grid, .club-white-label { grid-template-columns: 1fr; }
   .player-app-story__phones { order: 2; }
