@@ -1,0 +1,8 @@
+/homepage-preview/* / 301
+/organizer /organizers/ 301
+/player /players/ 301
+/operator /operators/ 301
+/club /clubs/ 301
+/operators/apply/ /operators/request-call/ 301
+/clubs/contact/ /clubs/request-demo/ 301
+/* /404.html 404

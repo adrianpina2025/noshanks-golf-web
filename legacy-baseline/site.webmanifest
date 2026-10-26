@@ -1,0 +1,20 @@
+{
+  "name": "No Shanks",
+  "short_name": "No Shanks",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f0e8",
+  "theme_color": "#073b2d",
+  "icons": [
+    {
+      "src": "/assets/icons/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
