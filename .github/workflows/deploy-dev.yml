@@ -64,6 +64,7 @@ jobs:
           audience=$(jq --raw-output '.aud' <<<"$claims")
           subject=$(jq --raw-output '.sub' <<<"$claims")
           issuer=$(jq --raw-output '.iss' <<<"$claims")
+          printf 'OIDC claims: issuer=%s audience=%s subject=%s\n' "$issuer" "$audience" "$subject"
           test "$audience" = "$EXPECTED_AUDIENCE"
           test "$subject" = "$EXPECTED_SUBJECT"
           test "$issuer" = 'https://token.actions.githubusercontent.com'
