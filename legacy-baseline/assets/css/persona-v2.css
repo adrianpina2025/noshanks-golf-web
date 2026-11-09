@@ -479,6 +479,11 @@ html[data-theme="dark"] .operator-type-switcher__nav button.is-active { backgrou
 }
 .benefit-grid h3 { margin: auto 0 15px; font-family: var(--font-display); font-size: clamp(2.25rem, 3.2vw, 3.45rem); }
 .benefit-grid p { color: var(--ink-soft); }
+.golf-professionals-club-grid h3 { min-height: 2.2em; display: flex; align-items: flex-end; }
+
+@media (max-width: 760px) {
+  .golf-professionals-club-grid h3 { min-height: 0; }
+}
 
 .operator-workflow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; }
 .operator-workflow__request { min-height: 460px; padding: clamp(28px, 3.5vw, 48px); border: 1px solid var(--line); background: var(--paper); display: flex; flex-direction: column; }
