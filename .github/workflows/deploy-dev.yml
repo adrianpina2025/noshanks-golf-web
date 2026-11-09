@@ -48,7 +48,10 @@ jobs:
       - name: Verify GitHub OIDC claims without exposing token material
         env:
           EXPECTED_AUDIENCE: sts.amazonaws.com
-          EXPECTED_SUBJECT: repo:adrianpina2025/noshanks-golf-web:environment:noshanks-dev
+          # This organization uses GitHub's ID-based OIDC subject template.
+          # The IDs bind the trust to this owner/repository/environment even if
+          # either display name later changes.
+          EXPECTED_SUBJECT: repo:adrianpina2025@26201889/noshanks-golf-web@1434449509:environment:noshanks-dev
         run: |
           set -euo pipefail
           response=$(curl --fail --silent --show-error \
