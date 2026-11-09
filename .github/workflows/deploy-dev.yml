@@ -1,0 +1,69 @@
+name: Deploy No Shanks DEV
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: noshanks-dev-deploy
+  cancel-in-progress: false
+
+env:
+  DEPLOY_DIRECTORY: legacy-baseline
+  DEPLOY_BUCKET: noshanks-site-staging-361380116600
+  DISTRIBUTION_ID: E1UZKBF3T8YIJT
+  AWS_REGION: us-east-1
+
+jobs:
+  deploy:
+    name: Deploy static baseline to DEV
+    runs-on: ubuntu-latest
+    environment: noshanks-dev
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify deployment configuration
+        env:
+          ROLE_ARN: ${{ vars.AWS_NO_SHANKS_DEV_DEPLOY_ROLE_ARN }}
+        run: |
+          set -euo pipefail
+          test -n "$ROLE_ARN" || {
+            echo "Repository variable AWS_NO_SHANKS_DEV_DEPLOY_ROLE_ARN is required." >&2
+            exit 1
+          }
+          test -f "$DEPLOY_DIRECTORY/index.html"
+          test -f "$DEPLOY_DIRECTORY/_redirects"
+
+      - name: Configure AWS credentials through GitHub OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_NO_SHANKS_DEV_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: noshanks-dev-${{ github.run_id }}
+
+      - name: Sync DEV static site
+        run: |
+          set -euo pipefail
+          aws s3 sync "$DEPLOY_DIRECTORY/" "s3://$DEPLOY_BUCKET/" --delete --only-show-errors
+
+      - name: Invalidate DEV CloudFront cache
+        run: |
+          set -euo pipefail
+          invalidation_id=$(aws cloudfront create-invalidation \
+            --distribution-id "$DISTRIBUTION_ID" \
+            --paths '/*' \
+            --query 'Invalidation.Id' \
+            --output text)
+          aws cloudfront wait invalidation-completed \
+            --distribution-id "$DISTRIBUTION_ID" \
+            --id "$invalidation_id"
+
+      - name: Report deployed revision
+        run: |
+          echo "No Shanks DEV deployed Git SHA: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+
