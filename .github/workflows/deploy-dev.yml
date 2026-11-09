@@ -39,6 +39,36 @@ jobs:
           test -f "$DEPLOY_DIRECTORY/index.html"
           test -f "$DEPLOY_DIRECTORY/_redirects"
 
+          expected_role='arn:aws:iam::361380116600:role/orbis/dev/NoShanksGolfWebDevDeployRole'
+          test "$ROLE_ARN" = "$expected_role" || {
+            echo "Unexpected DEV deployment role ARN." >&2
+            exit 1
+          }
+
+      - name: Verify GitHub OIDC claims without exposing token material
+        env:
+          EXPECTED_AUDIENCE: sts.amazonaws.com
+          EXPECTED_SUBJECT: repo:adrianpina2025/noshanks-golf-web:environment:noshanks-dev
+        run: |
+          set -euo pipefail
+          response=$(curl --fail --silent --show-error \
+            -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${EXPECTED_AUDIENCE}")
+          token=$(jq --raw-output '.value' <<<"$response")
+          payload=$(cut -d. -f2 <<<"$token" | tr '_-' '/+')
+          case $((${#payload} % 4)) in
+            2) payload+='==' ;;
+            3) payload+='=' ;;
+          esac
+          claims=$(printf '%s' "$payload" | base64 --decode)
+          audience=$(jq --raw-output '.aud' <<<"$claims")
+          subject=$(jq --raw-output '.sub' <<<"$claims")
+          issuer=$(jq --raw-output '.iss' <<<"$claims")
+          test "$audience" = "$EXPECTED_AUDIENCE"
+          test "$subject" = "$EXPECTED_SUBJECT"
+          test "$issuer" = 'https://token.actions.githubusercontent.com'
+          echo "OIDC preflight passed: issuer, audience, and restricted subject verified."
+
       - name: Configure AWS credentials through GitHub OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -66,4 +96,3 @@ jobs:
       - name: Report deployed revision
         run: |
           echo "No Shanks DEV deployed Git SHA: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
-
